@@ -100,7 +100,7 @@ public class ContentProviderTimeoutCache
             else {
                 // TODO -- replace "0" with the expiration time of
                 // given acronym that's obtained from the cursor.
-                Long expirationTime = CLEANUP_SCHEDULER_TIME_INTERVAL;
+                Long expirationTime = cursor.getLong(cursor.getColumnIndex(AcronymEntry.COLUMN_EXPIRATION_TIME));
                 
                 // Check if the acronym is expired. If true, then
                 // remove it.
@@ -239,6 +239,7 @@ public class ContentProviderTimeoutCache
         String[] selectionArgs = { acronym };
 
         // TODO - delete the row(s) associated with an acronym.
+        mContext.getContentResolver().delete(AcronymEntry.CONTENT_URI, SELECTION_ACRONYM, selectionArgs);
     }
 
     /**
@@ -275,6 +276,18 @@ public class ContentProviderTimeoutCache
         };
 
         // TODO -- delete expired acronym expansions.
+        Cursor expiredAcronyms = null;
+        try {
+            expiredAcronyms = mContext.getContentResolver().query(AcronymEntry.CONTENT_URI, new String[] {AcronymEntry.COLUMN_ACRONYM}, SELECTION_EXPIRATION, selectionArgs, null);
+            if (expiredAcronyms != null && expiredAcronyms.moveToFirst()) {
+                do {
+                    String deleteAcro = expiredAcronyms.getString(expiredAcronyms.getColumnIndex(AcronymEntry.COLUMN_ACRONYM));
+                    remove(deleteAcro);
+                } while(expiredAcronyms.moveToNext());
+            }
+        } finally {
+            expiredAcronyms.close();
+        }
     }
 
     /**

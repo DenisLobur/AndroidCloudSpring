@@ -13,6 +13,7 @@ import vandy.mooc.utils.GenericAsyncTask;
 import vandy.mooc.utils.GenericAsyncTaskOps;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -157,7 +158,9 @@ public class AcronymOps
                 // two-way Retrofit RPC call.
                 // TODO -- you fill in here, replacying "null" with a
                 // call to the appropriate method on the proxy.
-                AcronymData result = mAcronymWebServiceProxy.getAcronymResults(acronym).get(0);
+                List<AcronymData> listOfAcronyms = mAcronymWebServiceProxy.getAcronymResults(acronym);
+
+                AcronymData result = !listOfAcronyms.isEmpty() ? listOfAcronyms.get(0) : new AcronymData(acronym, new ArrayList<AcronymExpansion>());
                         
                 // Get the "long forms" of the acronym expansion.
                 longForms = result.getLfs();

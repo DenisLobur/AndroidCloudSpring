@@ -127,7 +127,7 @@ public class AcronymProvider extends ContentProvider {
         case ACRONYMS:
             // TODO - replace 0 with code that inserts a row in Table
             // and returns the row id.
-            long id = 0;
+            long id = db.insert(AcronymContract.AcronymEntry.TABLE_NAME, null, values);
 
             // Check if a new row is inserted or not.
             if (id > 0)
@@ -204,6 +204,8 @@ public class AcronymProvider extends ContentProvider {
                         String[] selectionArgs,
                         String sortOrder) {
         Cursor retCursor;
+        final SQLiteDatabase db =
+                mOpenHelper.getWritableDatabase();
 
         // Match the id returned by UriMatcher to query appropriate
         // rows.
@@ -212,7 +214,7 @@ public class AcronymProvider extends ContentProvider {
             // TODO -- replace "null" by writing code to query the
             // entire SQLite database based on the parameters passed
             // into the method.
-            retCursor = null;
+            retCursor = db.query(AcronymContract.AcronymEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
             break;
         case ACRONYM: 
             // Selection clause that matches row id with id passed
@@ -227,7 +229,7 @@ public class AcronymProvider extends ContentProvider {
             // TODO -- replace "null" by writing code to query the
             // SQLite database for the particular rowId based on (a
             // subset of) the parameters passed into the method.
-            retCursor = null;
+            retCursor = db.query(AcronymContract.AcronymEntry.TABLE_NAME, projection, rowId, selectionArgs, null, null, null);
             break;
         default:
             throw new UnsupportedOperationException("Unknown uri: " 

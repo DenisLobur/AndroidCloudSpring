@@ -81,13 +81,7 @@ public class ContentProviderTimeoutCache
        
         // Cursor that is returned as a result of database query which
         // points to one or more rows.
-        try (Cursor cursor =
-             mContext.getContentResolver().query
-             (AcronymEntry.CONTENT_URI,
-              null,
-              SELECTION_ACRONYM,
-              selectionArgs,
-              null)) {
+        try (Cursor cursor = mContext.getContentResolver().query(AcronymEntry.CONTENT_URI, null, SELECTION_ACRONYM, selectionArgs, null)) {
             // If there are not matches in the database return false. 
             if (!cursor.moveToFirst())
                 return null;
@@ -216,6 +210,8 @@ public class ContentProviderTimeoutCache
             // expansions create a ContentValues object that contains
             // their contents, and store this into the appropriate
             // location the cvArray.
+            cvArray[i] = new ContentValues();
+            cvArray[i].put(AcronymEntry.COLUMN_ACRONYM, acronym);
         }
 
         // Use ContentResolver to bulk insert the ContentValues into

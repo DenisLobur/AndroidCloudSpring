@@ -17,7 +17,9 @@
  */
 package org.magnum.dataup;
 
+import org.magnum.dataup.model.Video;
 import org.springframework.stereotype.Controller;
+import retrofit.RestAdapter;
 
 @Controller
 public class AnEmptyController {
@@ -39,6 +41,14 @@ public class AnEmptyController {
 	 * 
 	 */
 
-	
-	
+	private static final String SERVER = "http://localhost:8080";
+
+	private VideoSvcApi videoSvc = new RestAdapter.Builder()
+			.setEndpoint(SERVER).build()
+			.create(VideoSvcApi.class);
+
+
+	public void addVideo(Video v) {
+		videoSvc.addVideo(v);
+	}
 }

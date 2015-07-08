@@ -20,16 +20,17 @@ package org.magnum.dataup;
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import retrofit.client.Response;
-import retrofit.http.Body;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.mime.TypedFile;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Controller
@@ -62,11 +63,15 @@ public class VideoController implements VideoSvcApi {
 	}
 
 	@RequestMapping(value = VIDEO_SVC_PATH, method = RequestMethod.POST)
-	public @ResponseBody Video addVideo(@Body Video v) {
-        Video video = Video.create().withContentType(v.getContentType())
-                .withDuration(v.getDuration())
-                .withSubject(v.getSubject())
-                .withTitle(v.getTitle()).build();
+	public @ResponseBody Video addVideo(@RequestBody Video v) {
+        Video video = new Video();
+		video.setTitle(v.getTitle());
+		video.setDuration(v.getDuration());
+		video.setContentType(v.getContentType());
+		video.setLocation(v.getLocation());
+		video.setSubject(v.getSubject());
+		video.setId(v.getId() > 0 ? v.getId() : UUID.randomUUID().variant());
+		video.setDataUrl(v.getDataUrl() != null ? v.getDataUrl() : UUID.randomUUID().toString());
 
 		return video;
 

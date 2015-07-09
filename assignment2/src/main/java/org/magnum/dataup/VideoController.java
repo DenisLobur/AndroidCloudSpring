@@ -29,7 +29,9 @@ import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.mime.TypedFile;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -80,8 +82,16 @@ public class VideoController implements VideoSvcApi {
 	}
 
 	@Override
-	public VideoStatus setVideoData(@Path(ID_PARAMETER) long id, @Part(DATA_PARAMETER) TypedFile videoData) {
-		return null;
+	public VideoStatus setVideoData(@Path(ID_PARAMETER) long id, @Part(DATA_PARAMETER) TypedFile videoData) throws Exception {
+        Set<Long> ids = new HashSet<>();
+
+        for (Video v : videos) {
+            ids.add(v.getId());
+        }
+        if (!ids.contains(id)){
+            throw new Exception();
+        }
+        return null;
 	}
 
 	@Override

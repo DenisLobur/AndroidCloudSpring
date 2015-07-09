@@ -42,20 +42,13 @@ package org.magnum.dataup;
     \:\__\        \::/  /       \::/  /        /:/  /     \:\__\          \:\__\        
      \/__/         \/__/         \/__/         \/__/       \/__/           \/__/        
  */
-import java.util.Collection;
-
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
-
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.Multipart;
-import retrofit.http.POST;
-import retrofit.http.Part;
-import retrofit.http.Path;
-import retrofit.http.Streaming;
+import retrofit.http.*;
 import retrofit.mime.TypedFile;
+
+import java.util.Collection;
 
 /**
  * This interface defines an API for a VideoSvc. The
@@ -170,7 +163,7 @@ public interface VideoSvcApi {
 	 */
 	@Multipart
 	@POST(VIDEO_DATA_PATH)
-	public VideoStatus setVideoData(@Path(ID_PARAMETER) long id, @Part(DATA_PARAMETER) TypedFile videoData);
+	public VideoStatus setVideoData(@Path(ID_PARAMETER) long id, @Part(DATA_PARAMETER) TypedFile videoData) throws Exception;
 	
 	/**
 	 * This endpoint should return the video data that has been associated with

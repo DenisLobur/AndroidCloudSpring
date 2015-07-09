@@ -73,6 +73,8 @@ public class VideoController implements VideoSvcApi {
 		video.setId(v.getId() > 0 ? v.getId() : UUID.randomUUID().variant());
 		video.setDataUrl(v.getDataUrl() != null ? v.getDataUrl() : UUID.randomUUID().toString());
 
+		videos.add(video);
+
 		return video;
 
 	}

@@ -42,6 +42,7 @@ package org.magnum.dataup;
     \:\__\        \::/  /       \::/  /        /:/  /     \:\__\          \:\__\        
      \/__/         \/__/         \/__/         \/__/       \/__/           \/__/        
  */
+
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import retrofit.client.Response;
@@ -162,6 +163,7 @@ public interface VideoSvcApi {
 	 * @return
 	 */
 	@Multipart
+    @Headers({ "Content-Type: application/json"})
 	@POST(VIDEO_DATA_PATH)
 	public VideoStatus setVideoData(@Path(ID_PARAMETER) long id, @Part(DATA_PARAMETER) TypedFile videoData) throws Exception;
 	
@@ -184,6 +186,7 @@ public interface VideoSvcApi {
 	 * @return
 	 */
 	@Streaming
+    @Headers({ "Content-Type: application/json"})
     @GET(VIDEO_DATA_PATH)
     Response getData(@Path(ID_PARAMETER) long id);
 	

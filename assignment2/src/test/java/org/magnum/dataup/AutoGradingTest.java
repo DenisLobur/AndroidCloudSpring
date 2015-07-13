@@ -43,30 +43,23 @@ package org.magnum.dataup;
     \:\__\        \::/  /       \::/  /        /:/  /     \:\__\          \:\__\        
      \/__/         \/__/         \/__/         \/__/       \/__/           \/__/        
  */
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import io.magnum.autograder.junit.Rubric;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import org.magnum.dataup.model.VideoStatus.VideoState;
-
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class AutoGradingTest {
 
@@ -148,10 +141,10 @@ public class AutoGradingTest {
 		VideoStatus status = videoSvc.setVideoData(received.getId(),
 				new TypedFile(received.getContentType(), testVideoData));
 		assertEquals(VideoState.READY, status.getState());
-		
+
 		Response response = videoSvc.getData(received.getId());
 		assertEquals(200, response.getStatus());
-		
+
 		InputStream videoData = response.getBody().in();
 		byte[] originalFile = IOUtils.toByteArray(new FileInputStream(testVideoData));
 		byte[] retrievedFile = IOUtils.toByteArray(videoData);

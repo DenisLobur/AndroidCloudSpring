@@ -227,7 +227,7 @@ official grade.
 ```
 - The IDs must be of type long. The tests send long values to the server and will generate
   400 response codes if you use an int.
-- If you get an error 400, you have incorrectly specified the parameter values that the method
+- If you get an error 400, you have inconullrrectly specified the parameter values that the method
   should accept and their mapping to HTTP parameters.
 - One of the Controller methods that is annotated with @RequestMapping is probably going to need 
   to take an HttpServletResponse object as a parameter and use this object to write out binary data 

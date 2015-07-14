@@ -9,8 +9,7 @@ public class Constants {
      * URL of the VideoWebService.  Please Read the Instructions in
      * README.md to set up the SERVER_URL.
      */
-    public static final String SERVER_URL =
-        "http://XXX.XXX.XXX.XXX:8080";
+    public static final String SERVER_URL = "http://192.168.1.103:8080";
     
     /**
      * Define a constant for 1 MB.

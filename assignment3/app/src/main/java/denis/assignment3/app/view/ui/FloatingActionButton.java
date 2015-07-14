@@ -4,6 +4,7 @@ package denis.assignment3.app.view.ui;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -13,10 +14,13 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import denis.assignment3.app.R;
 
 /**
@@ -41,6 +45,9 @@ public class FloatingActionButton extends View {
     /**
      * Paints used to draw the Button in Canvas.
      */
+
+    Context context;
+
     Paint mButtonPaint;
     Paint mDrawablePaint;
     
@@ -63,6 +70,13 @@ public class FloatingActionButton extends View {
      * @param context
      * @param attrs
      */
+
+    public FloatingActionButton(Context context) {
+        super(context);
+        this.context = context;
+        init(Color.WHITE);
+    }
+
 	public FloatingActionButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         
@@ -203,5 +217,120 @@ public class FloatingActionButton extends View {
      */
     public boolean isHidden() {
         return mHidden;
+    }
+
+    static public class Builder {
+        private FrameLayout.LayoutParams params;
+        private final Activity activity;
+        int gravity = Gravity.BOTTOM | Gravity.END; // default bottom right
+        Drawable drawable;
+        int color = Color.WHITE;
+        int size = 0;
+        float scale = 0;
+
+        /**
+         * Constructor used to initialize the Builder.
+         *
+         * @param context
+         */
+        public Builder(Activity context) {
+            scale = context.getResources().getDisplayMetrics().density;
+            size = convertToPixels(72, scale); // default size is 72dp by 72dp
+            params = new FrameLayout.LayoutParams(size, size);
+            params.gravity = gravity;
+
+            this.activity = context;
+        }
+
+        /**
+         * Sets the Gravity of the View.
+         *
+         * @param gravity
+         * @return Builder
+         */
+        public Builder withGravity(int gravity) {
+            this.gravity = gravity;
+            return this;
+        }
+
+        /**
+         * Sets the Margins of the View.
+         *
+         * @param left
+         * @param top
+         * @param right
+         * @param bottom
+         *
+         * @return Builder
+         */
+        public Builder withMargins(int left, int top, int right, int bottom) {
+            params.setMargins(
+                    convertToPixels(left, scale),
+                    convertToPixels(top, scale),
+                    convertToPixels(right, scale),
+                    convertToPixels(bottom, scale));
+            return this;
+        }
+
+        /**
+         * Sets the Drawable used by the View.
+         *
+         * @param drawable
+         * @return Builder
+         */
+        public Builder withDrawable(final Drawable drawable) {
+            this.drawable = drawable;
+            return this;
+        }
+
+        /**
+         * Sets the color used by the View.
+         *
+         * @param color
+         * @return Builder
+         */
+        public Builder withButtonColor(final int color) {
+            this.color = color;
+            return this;
+        }
+
+        /**
+         * Sets the size of the View.
+         *
+         * @param size
+         * @return Builder
+         */
+        public Builder withButtonSize(int size) {
+            size = convertToPixels(size, scale);
+            params = new FrameLayout.LayoutParams(size, size);
+            return this;
+        }
+
+        /**
+         * Creates the Floating Action Button.
+         *
+         * @return FloatingActionButton
+         */
+        public FloatingActionButton create() {
+            final FloatingActionButton button = new FloatingActionButton(activity);
+            button.setFloatingActionButtonColor(this.color);
+            button.setFloatingActionButtonDrawable(this.drawable);
+            params.gravity = this.gravity;
+            ViewGroup root = (ViewGroup) activity.findViewById(android.R.id.content);
+            root.addView(button, params);
+            return button;
+        }
+
+        /**
+         * Calculate and scale the values to fit
+         * the larger devices.
+         *
+         * @param dp
+         * @param scale
+         * @return
+         */
+        private int convertToPixels(int dp, float scale){
+            return (int) (dp * scale + 0.5f) ;
+        }
     }
 }

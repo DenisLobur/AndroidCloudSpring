@@ -59,8 +59,7 @@ public class RetainedFragmentManager {
             // Find the RetainedFragment on Activity restarts.  The
             // RetainedFragment has no UI so it must be referenced via
             // a tag.
-            mRetainedFragment = (RetainedFragment) 
-                mFragmentManager.get().findFragmentByTag(mRetainedFragmentTag);
+            mRetainedFragment = (RetainedFragment)mFragmentManager.get().findFragmentByTag(mRetainedFragmentTag);
 
             // A value of null means it's the first time in, so there's
             // extra work to do.
@@ -77,9 +76,7 @@ public class RetainedFragmentManager {
                     add(mRetainedFragment,
                         mRetainedFragmentTag).commit();
                 return true;
-            } 
-            // A value of non-null means it's not first time in.
-            else {
+            } else {
                 Log.d(TAG,
                       "Returning existing RetainedFragment "
                       + mRetainedFragmentTag);

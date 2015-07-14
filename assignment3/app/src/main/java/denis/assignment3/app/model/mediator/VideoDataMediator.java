@@ -140,8 +140,7 @@ public class VideoDataMediator {
      */
     public List<Video> getVideoList() {
         try {
-            return (ArrayList<Video>)
-                        mVideoServiceProxy.getVideoList();
+            return (ArrayList<Video>) mVideoServiceProxy.getVideoList();
         } catch (Exception e) {
            return null; 
         }

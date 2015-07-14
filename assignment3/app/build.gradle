@@ -1,4 +1,7 @@
 buildscript {
+    ext {
+        springBootVersion = '1.0.2.RELEASE'
+    }
     repositories {
         jcenter()
     }
@@ -7,10 +10,6 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
-
-repositories {
-    jcenter()
-}
 
 android {
     compileSdkVersion 21
@@ -22,6 +21,7 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -34,6 +34,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile "commons-io:commons-io:+"
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'commons-io:commons-io:+'
+
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+
+    compile("com.squareup.retrofit:retrofit:1.6.0")
 }

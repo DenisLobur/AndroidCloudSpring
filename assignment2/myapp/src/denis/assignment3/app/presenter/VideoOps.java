@@ -120,14 +120,11 @@ public class VideoOps
     /**
      * Start a service that Uploads the Video having given Id.
      *   
-     * @param videoId
+     * @param
      */
     public void uploadVideo(Uri videoUri){
         // Sends an Intent command to the UploadVideoService.
-        mVideoView.get().getApplicationContext().startService
-            (UploadVideoService.makeIntent
-                    (mVideoView.get().getApplicationContext(),
-                            videoUri));
+        mVideoView.get().getApplicationContext().startService(UploadVideoService.makeIntent(mVideoView.get().getApplicationContext(), videoUri));
     }
 
     /**

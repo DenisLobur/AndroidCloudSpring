@@ -72,7 +72,7 @@ public class MainListActivity extends GenericActivity<VideoOps.View, VideoOps> i
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadResultReceiver);
     }
 
-    private class UploadResultReceiver extends BroadcastReceiver {
+    public class UploadResultReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {

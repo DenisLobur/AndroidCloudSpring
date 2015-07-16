@@ -57,7 +57,7 @@ public class UploadVideoService
     /**
      * Constructor for UploadVideoService.
      * 
-     * @param name
+     * @param
      */
     public UploadVideoService() {
         super("UploadVideoService");     
@@ -67,15 +67,12 @@ public class UploadVideoService
      * Factory method that makes the explicit intent another Activity
      * uses to call this Service.
      * 
-     * @param context
-     * @param videoId
+     * @param
+     * @param
      * @return
      */
-    public static Intent makeIntent(Context context,
-                                    Uri videoUri) {
-        return new Intent(context, 
-                          UploadVideoService.class)
-                   .setData(videoUri);
+    public static Intent makeIntent(Context context, Uri videoUri) {
+        return new Intent(context, UploadVideoService.class).setData(videoUri);
     }
     
     /**

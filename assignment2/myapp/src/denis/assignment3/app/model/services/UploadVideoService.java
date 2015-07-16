@@ -110,9 +110,7 @@ public class UploadVideoService
     private void sendBroadcast(){
         // Use a LocalBroadcastManager to restrict the scope of this
         // Intent to the VideoUploadClient application.
-        LocalBroadcastManager.getInstance(this)
-             .sendBroadcast(new Intent(ACTION_UPLOAD_SERVICE_RESPONSE)
-                            .addCategory(Intent.CATEGORY_DEFAULT));
+        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(ACTION_UPLOAD_SERVICE_RESPONSE).addCategory(Intent.CATEGORY_DEFAULT));
     }
     
     /**

@@ -49,7 +49,7 @@ public class VideoDataMediator {
     /**
      * Constructor that initializes the VideoDataMediator.
      * 
-     * @param context
+     * @param
      */
     public VideoDataMediator() {
         // Initialize the VideoServiceProxy.
@@ -64,8 +64,7 @@ public class VideoDataMediator {
      * Uploads the Video having the given Id.  This Id is the Id of
      * Video in Android Video Content Provider.
      * 
-     * @param videoId
-     *            Id of the Video to be uploaded.
+     * @param *        Id of the Video to be uploaded.
      *
      * @return A String indicating the status of the video upload operation.
      */
@@ -145,4 +144,18 @@ public class VideoDataMediator {
            return null; 
         }
     }
+
+    //TODO: finish download
+    /*public void downloadVideo(Context context, Uri videoUri){
+        String filePath =
+                VideoMediaStoreUtils.getPath(context,
+                        videoUri);
+
+        // Get the Video from Android Video Content Provider having
+        // the given filePath.
+        Video androidVideo =
+                VideoMediaStoreUtils.getVideo(context,
+                        filePath);
+        Video received = mVideoServiceProxy.addVideo()
+    }*/
 }

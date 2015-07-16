@@ -23,9 +23,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="denis.assignment3.app.view.DetailActivity">
+
+        </activity>
+
         <service android:name="denis.assignment3.app.model.services.UploadVideoService"/>
 
-        <receiver android:name="denis.assignment3.app.view.MainListActivity$UploadResultReceiver" >
-        </receiver>
     </application>
 </manifest>

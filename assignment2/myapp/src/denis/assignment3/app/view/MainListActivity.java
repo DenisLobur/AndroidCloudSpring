@@ -1,24 +1,25 @@
 package denis.assignment3.app.view;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.example.myapp.R;
 import denis.assignment3.app.common.GenericActivity;
 import denis.assignment3.app.common.Utils;
+import denis.assignment3.app.model.mediator.webdata.Video;
 import denis.assignment3.app.model.services.UploadVideoService;
 import denis.assignment3.app.presenter.VideoOps;
+import denis.assignment3.app.utils.Constants;
 import denis.assignment3.app.utils.VideoStorageUtils;
 import denis.assignment3.app.view.ui.FloatingActionButton;
 import denis.assignment3.app.view.ui.VideoAdapter;
@@ -31,7 +32,6 @@ public class MainListActivity extends GenericActivity<VideoOps.View, VideoOps> i
 
     private static final String KEY_RECORD_VIDEO_URI = "recordedVideoUri";
 
-    private Button button;
     private FloatingActionButton mUploadVideoButton;
     private ListView mVideoList;
     private Uri mRecordVideoUri;
@@ -42,13 +42,54 @@ public class MainListActivity extends GenericActivity<VideoOps.View, VideoOps> i
         setContentView(R.layout.activity_main);
 
         mVideoList = (ListView)findViewById(R.id.video_list);
+        mVideoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Video video = (Video)mVideoList.getAdapter().getItem(position);
+                Intent intent = new Intent(MainListActivity.this, DetailActivity.class);
+                String path = getContent();
+                intent.putExtra(Constants.LOCAL_VIDEO_URI, path);
+
+                startActivity(intent);
+            }
+        });
+        mUploadResultReceiver = new UploadResultReceiver();
         createUploadButton();
         super.onCreate(savedInstanceState, VideoOps.class, this);
+    }
+
+    private String getContent() {
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        Cursor cursor = contentResolver.query(uri, null, null, null, null);
+        String path = "";
+        if (cursor != null) {
+            if (cursor.moveToFirst()){
+                int titleColumn = cursor.getColumnIndex(MediaStore.Video.Media.TITLE);
+                int sizeColumn = cursor.getColumnIndex(MediaStore.Video.Media.SIZE);
+                int mimeTypeColumn = cursor.getColumnIndex(MediaStore.Video.Media.MIME_TYPE);
+                int dataColumn = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
+                int widthColumn = cursor.getColumnIndex(MediaStore.Video.Media.WIDTH);
+                int heightColumn = cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT);
+                do {
+                    String title = cursor.getString(titleColumn);
+                    String size = cursor.getString(sizeColumn);
+                    String data = cursor.getString(dataColumn);
+                    path = data;
+                    String mimeType = cursor.getString(mimeTypeColumn);
+                    String width = cursor.getString(widthColumn);
+                    String height = cursor.getString(heightColumn);
+                } while (cursor.moveToNext());
+                cursor.close();
+            }
+        }
+        return path;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
         registerReceiver();
     }
 
@@ -56,26 +97,29 @@ public class MainListActivity extends GenericActivity<VideoOps.View, VideoOps> i
 
         // Create an Intent filter that handles Intents from the
         // UploadVideoService.
-        IntentFilter intentFilter =
-                new IntentFilter(UploadVideoService.ACTION_UPLOAD_SERVICE_RESPONSE);
+        IntentFilter intentFilter = new IntentFilter(UploadVideoService.ACTION_UPLOAD_SERVICE_RESPONSE);
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 
         // Register the BroadcastReceiver.
+        Log.d(TAG, "Register receiver");
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(mUploadResultReceiver,
                         intentFilter);
+//        registerReceiver(mUploadResultReceiver, intentFilter);
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
+        Log.d(TAG, "Unregister receiver");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadResultReceiver);
+        super.onPause();
     }
 
-    public class UploadResultReceiver extends BroadcastReceiver {
+    private class UploadResultReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive");
             getOps().getVideoList();
         }
     }
@@ -115,24 +159,15 @@ public class MainListActivity extends GenericActivity<VideoOps.View, VideoOps> i
 
     @SuppressWarnings("deprecation")
     private void createUploadButton() {
-        final DisplayMetrics metrics =
-                getResources().getDisplayMetrics();
-        final int position =
-                (metrics.widthPixels / 4) + 5;
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
+        final int position = (metrics.widthPixels / 4) + 5;
 
         // Create Floating Action Button using the Builder pattern.
-        mUploadVideoButton =
-                new FloatingActionButton
+        mUploadVideoButton = new FloatingActionButton
                         .Builder(this)
-                        .withDrawable(getResources()
-                                .getDrawable(R.drawable.ic_launcher))
-                        .withButtonColor(getResources()
-                                .getColor(R.color.green))
-                        .withGravity(Gravity.BOTTOM | Gravity.END)
-                        .withMargins(0,
-                                0,
-                                position,
-                                0)
+                        .withDrawable(getResources().getDrawable(R.drawable.ic_launcher))
+                        .withButtonColor(getResources().getColor(R.color.green))
+                        .withGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL)
                         .create();
 
         // Show the UploadVideoDialog Fragment when user clicks the

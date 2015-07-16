@@ -20,4 +20,6 @@ public class Constants {
      * Maximum size of Video to be uploaded in MB.
      */
     public static final long MAX_SIZE_MEGA_BYTE = 50 * MEGA_BYTE;
+
+    public static final String LOCAL_VIDEO_URI = "local_video_uri";
 }

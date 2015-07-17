@@ -22,4 +22,6 @@ public class Constants {
     public static final long MAX_SIZE_MEGA_BYTE = 50 * MEGA_BYTE;
 
     public static final String LOCAL_VIDEO_URI = "local_video_uri";
+
+    public static final String REMOTE_VIDEO_ID = "remote_id";
 }

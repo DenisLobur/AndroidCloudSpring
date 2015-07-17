@@ -1,27 +1,35 @@
 package denis.assignment3.app.view;
 
-import android.app.Activity;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.*;
+import android.view.Gravity;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.RatingBar;
 import com.example.myapp.R;
+import denis.assignment3.app.common.GenericActivity;
+import denis.assignment3.app.presenter.VideoOps;
 import denis.assignment3.app.utils.Constants;
 import denis.assignment3.app.view.ui.FloatingActionButton;
+import denis.assignment3.app.view.ui.VideoAdapter;
 
 /**
  * Created by denis on 7/13/15.
  */
-public class DetailActivity extends Activity implements MediaPlayer.OnBufferingUpdateListener,
+public class DetailActivity extends GenericActivity<VideoOps.View, VideoOps> implements MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnVideoSizeChangedListener,
         MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener,
-        SurfaceHolder.Callback {
+        SurfaceHolder.Callback,
+        VideoOps.View {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
     private FloatingActionButton mPlayButton;
+    private FloatingActionButton mDownloadButton;
     private MediaPlayer mMediaPlayer;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder;
@@ -32,17 +40,21 @@ public class DetailActivity extends Activity implements MediaPlayer.OnBufferingU
     private int mVideoHeight;
     private boolean mIsVideoSizeKnown = false;
     private static final String MEDIA = "media";
+    private RatingBar mRatingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
         mSurfaceView = (SurfaceView)findViewById(R.id.video_view);
         mSurfaceHolder = mSurfaceView.getHolder();
+        mRatingBar = (RatingBar) findViewById(R.id.video_rating);
         mSurfaceHolder.addCallback(this);
         mExtras = getIntent().getExtras();
         createPlayButton();
+        createDownloadButton();
+
+        super.onCreate(savedInstanceState, VideoOps.class, this);
     }
 
     @SuppressWarnings("deprecation")
@@ -51,34 +63,36 @@ public class DetailActivity extends Activity implements MediaPlayer.OnBufferingU
 
         mPlayButton = new FloatingActionButton
                 .Builder(this)
-                .withDrawable(getResources().getDrawable(R.drawable.ic_launcher))
+                .withDrawable(getResources().getDrawable(R.drawable.ic_play_black_24dp))
                 .withButtonColor(getResources().getColor(R.color.fab))
-                .withGravity(Gravity.CENTER_HORIZONTAL| Gravity.BOTTOM)
+                .withGravity(Gravity.RIGHT | Gravity.BOTTOM)
+                .withMargins(0,0,50,0)
                 .create();
 
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                startVideoPlayback();
             }
         });
     }
 
-    private int a;
+    @SuppressWarnings("deprecation")
+    private void createDownloadButton() {
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
 
-    private int measureView() {
-        ViewTreeObserver vto = mSurfaceView.getViewTreeObserver();
-        if (vto.isAlive()) {
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    mSurfaceView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    int width = mSurfaceView.getMeasuredWidth();
-                    a = mSurfaceView.getHeight();
-                }
-            });
-        }
+        mDownloadButton = new FloatingActionButton
+                .Builder(this)
+                .withDrawable(getResources().getDrawable(R.drawable.ic_cloud_download_black_24dp))
+                .withButtonColor(getResources().getColor(R.color.fab))
+                .withGravity(Gravity.LEFT| Gravity.BOTTOM)
+                .withMargins(50,0,0,0)
+                .create();
 
-        return a;
+        mDownloadButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                getOps().downloadVideo(mExtras.getLong(Constants.REMOTE_VIDEO_ID));
+            }
+        });
     }
 
     private void playVideo(Integer media) {
@@ -128,7 +142,7 @@ public class DetailActivity extends Activity implements MediaPlayer.OnBufferingU
         mVideoWidth = width;
         mVideoHeight = height;
         if (mIsVideoReadyToBePlayed && mIsVideoSizeKnown) {
-            startVideoPlayback();
+            //startVideoPlayback();
         }
     }
 
@@ -136,7 +150,7 @@ public class DetailActivity extends Activity implements MediaPlayer.OnBufferingU
         Log.d(TAG, "onPrepared called");
         mIsVideoReadyToBePlayed = true;
         if (mIsVideoReadyToBePlayed && mIsVideoSizeKnown) {
-            startVideoPlayback();
+            //startVideoPlayback();
         }
     }
 
@@ -182,6 +196,11 @@ public class DetailActivity extends Activity implements MediaPlayer.OnBufferingU
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+
+    }
+
+    @Override
+    public void setAdapter(VideoAdapter videoAdapter) {
 
     }
 }

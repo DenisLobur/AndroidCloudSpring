@@ -5,6 +5,7 @@ import android.util.Log;
 import denis.assignment3.app.common.*;
 import denis.assignment3.app.model.mediator.VideoDataMediator;
 import denis.assignment3.app.model.mediator.webdata.Video;
+import denis.assignment3.app.model.services.DownloadVideoService;
 import denis.assignment3.app.model.services.UploadVideoService;
 import denis.assignment3.app.view.ui.VideoAdapter;
 
@@ -55,10 +56,7 @@ public class VideoOps
      * The GenericAsyncTask used to expand an Video in a background
      * thread via the Video web service.
      */
-    private GenericAsyncTask<Void,
-                             Void,
-            List<Video>,
-                             VideoOps> mAsyncTask;
+    private GenericAsyncTask<Void, Void, List<Video>, VideoOps> mAsyncTask;
     
     /**
      * VideoDataMediator mediates the communication between Video
@@ -102,8 +100,7 @@ public class VideoOps
         if (firstTimeIn) {
             // Create VideoDataMediator that will mediate the
             // communication between Server and Android Storage.
-            mVideoMediator =
-                new VideoDataMediator();
+            mVideoMediator = new VideoDataMediator();
             
             // Create a local instance of our custom Adapter for our
             // ListView.
@@ -125,6 +122,14 @@ public class VideoOps
     public void uploadVideo(Uri videoUri){
         // Sends an Intent command to the UploadVideoService.
         mVideoView.get().getApplicationContext().startService(UploadVideoService.makeIntent(mVideoView.get().getApplicationContext(), videoUri));
+    }
+
+    public void downloadVideo(long id) {
+        mVideoView.get().getApplicationContext().startService(DownloadVideoService.makeIntent(mVideoView.get().getApplicationContext(), id));
+    }
+    //TODO: rate
+    public void setRate(int rate){
+        //mVideoMediator.
     }
 
     /**

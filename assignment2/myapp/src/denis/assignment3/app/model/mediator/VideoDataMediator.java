@@ -7,12 +7,17 @@ import denis.assignment3.app.model.mediator.webdata.VideoServiceProxy;
 import denis.assignment3.app.model.mediator.webdata.VideoStatus;
 import denis.assignment3.app.utils.Constants;
 import denis.assignment3.app.utils.VideoMediaStoreUtils;
+import denis.assignment3.app.utils.VideoStorageUtils;
 import retrofit.RestAdapter;
+import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Mediates communication between the Video Service and the local
@@ -115,6 +120,7 @@ public class VideoDataMediator {
                         // Check if the Status of the Video or not.
                         if (status.getState() == VideoStatus.VideoState.READY) {
                             // Video successfully uploaded.
+                            uploadedVideos.put(receivedVideo.getId(), receivedVideo);
                             return STATUS_UPLOAD_SUCCESSFUL;
                         }
                     }
@@ -141,21 +147,51 @@ public class VideoDataMediator {
         try {
             return (ArrayList<Video>) mVideoServiceProxy.getVideoList();
         } catch (Exception e) {
-           return null; 
+           return null;
         }
     }
 
     //TODO: finish download
-    /*public void downloadVideo(Context context, Uri videoUri){
-        String filePath =
-                VideoMediaStoreUtils.getPath(context,
-                        videoUri);
 
-        // Get the Video from Android Video Content Provider having
-        // the given filePath.
-        Video androidVideo =
-                VideoMediaStoreUtils.getVideo(context,
-                        filePath);
-        Video received = mVideoServiceProxy.addVideo()
-    }*/
+    private static final AtomicLong currentId = new AtomicLong(0L);
+    private Map<Long, Video> uploadedVideos = new HashMap<>();
+
+    private void checkAndSetId(Video entity) {
+        if(entity.getId() == 0){
+            entity.setId(currentId.incrementAndGet());
+        }
+    }
+
+    private String getDataUrl(long videoId){
+        String url = getUrlBaseForLocalServer() + "/video/" + videoId + "/data";
+        return url;
+    }
+
+    private String getUrlBaseForLocalServer() {
+        /*HttpServletRequest request =
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String base =
+                "http://"+request.getServerName()
+                        + ((request.getServerPort() != 80) ? ":"+request.getServerPort() : "");*/
+        String base = "";
+        return base;
+    }
+
+    public String downloadVideo(Context context, long videoId){
+        Video v = uploadedVideos.get(videoId);
+
+        Response response = mVideoServiceProxy.getData(videoId);
+
+        VideoStorageUtils.storeVideoInExternalDirectory(context, response, "Downloaded");
+
+        if (response.getStatus() == 200) {
+            return "SUCCESS";
+        }
+            return "ERROR";
+    }
+
+    public Map<Long, Video> getCollection() {
+        return uploadedVideos;
+    }
 }
+

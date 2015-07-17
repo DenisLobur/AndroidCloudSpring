@@ -165,7 +165,7 @@ public class MainListActivity extends GenericActivity<VideoOps.View, VideoOps> i
         // Create Floating Action Button using the Builder pattern.
         mUploadVideoButton = new FloatingActionButton
                         .Builder(this)
-                        .withDrawable(getResources().getDrawable(R.drawable.ic_launcher))
+                        .withDrawable(getResources().getDrawable(R.drawable.ic_cloud_upload_black_24dp))
                         .withButtonColor(getResources().getColor(R.color.green))
                         .withGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL)
                         .create();
